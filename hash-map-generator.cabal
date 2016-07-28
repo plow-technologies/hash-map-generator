@@ -26,6 +26,8 @@ Library
                       , tasty-hunit
                       , tasty-quickcheck
                       , QuickCheck
+                      , unordered-containers
+                      , hashable
 
 executable hash-map-generator
   Default-Language:     Haskell2010
@@ -42,6 +44,8 @@ executable hash-map-generator
                       , tasty-hunit
                       , tasty-quickcheck
                       , QuickCheck
+                      , unordered-containers
+                      , hashable
 
 Test-Suite spec
   Type:                 exitcode-stdio-1.0
@@ -57,6 +61,8 @@ Test-Suite spec
                       , tasty-hunit
                       , tasty-quickcheck
                       , QuickCheck
+                      , unordered-containers
+                      , hashable
                       
 
 Source-Repository head
