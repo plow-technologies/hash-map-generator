@@ -1,11 +1,14 @@
 Name:                   hash-map-generator
-Version:                0.0.0
+Version:                0.1.0
 Author:                 Scott Murphy <scottmurphy09@gmail.com>
 Maintainer:             Scott Murphy <scottmurphy09@gmail.com>
 License:                BSD3
 License-File:           LICENSE
--- Synopsis:               
--- Description:            
+Synopsis:               Library for making self contained hash maps 
+Description:
+            This library creates a 'SelfMap', which is a Hashmap whose keys are generated
+            using Generic instances.  They are based on the Data Constructors of a given sum type.
+            This allows the user to have a quick record store with variable entries.
 Cabal-Version:          >= 1.10
 Build-Type:             Simple
 Extra-Source-Files:     README.md, ChangeLog.md
@@ -15,41 +18,14 @@ Library
   HS-Source-Dirs:       src
   GHC-Options:          -Wall
   Exposed-Modules:      Data.HashMap.Generator
-                        Data.HashMap.Generator.Internal
---  Other-Modules:        
+
+
   Build-Depends:        base >= 4 && < 5
--- Test Suite Code
-                      , lens
-                      , regex-genex
-                      , tasty                      
-                      , tasty-golden
-                      , tasty-hunit
-                      , tasty-quickcheck
-                      , QuickCheck
                       , unordered-containers
                       , hashable
                       , text
                       , template-haskell
 
-executable hash-map-generator
-  Default-Language:     Haskell2010
-  HS-Source-Dirs:       src
-  GHC-Options:          -Wall
-  main-is:              Main.hs
-  Build-Depends:        base >= 4 && < 5
-                      , hash-map-generator
--- Test Suite Code
-                      , lens
-                      , regex-genex
-                      , tasty                      
-                      , tasty-golden
-                      , tasty-hunit
-                      , tasty-quickcheck
-                      , QuickCheck
-                      , unordered-containers
-                      , hashable
-                      , text
-                      , template-haskell
 
 Test-Suite spec
   Type:                 exitcode-stdio-1.0
@@ -73,4 +49,4 @@ Test-Suite spec
 
 Source-Repository head
   Type:                 git
---  Location:             
+  Location:             https://github.com/plow-technologies/hash-map-generator.git

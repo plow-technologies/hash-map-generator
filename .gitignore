@@ -47,3 +47,4 @@ tramp
 # Yesod 
 yesod-devel/
 .stack-work
+/TAGS

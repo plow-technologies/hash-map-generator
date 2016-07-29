@@ -1,45 +1,49 @@
-{-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE DeriveGeneric   #-}
 {-# LANGUAGE TemplateHaskell #-}
 
 module Data.HashMap.GeneratorSpec (tests) where
 
-import Data.HashMap.Generator
+import           Data.HashMap.Generator
 import qualified Data.HashMap.Generator as G
 
 
-import Test.Tasty
-import Test.Tasty.QuickCheck as QC
-import Test.Tasty.HUnit
+import           Test.Tasty
 
-import GHC.Generics
+import           Test.Tasty.HUnit
 
-import Data.Ord
+import           GHC.Generics
+
 
 tests :: TestTree
 tests = testGroup "Tests" [unitTests]
 
 
 
+unitTests :: TestTree
 unitTests = testGroup "Unit tests"
-  [ testCase "Should retrive Location to Edit" (
-      lookupLocationToEdit `compare` (Just (LocationToEdit (Just 1))) @?= EQ)
-
-  -- the following test does not hold
+  [ testCase "Should retrive Location to Edit" ( 
+       lookupLocationToEdit `compare`  Just (LocationToEdit (Just 1)) @?= EQ)
+       
   , testCase "Should retrive Part to Display" (
-      lookupPartsToDisplay `compare` (Just (PartsToDisplay ("apart"))) @?= EQ)
+       lookupPartsToDisplay `compare` Just (PartsToDisplay "apart") @?= EQ)
   ]
 
-  -- Requirements 
--- Completely reified
+
+-- | An example sum type
 data AppMailboxes = LocationToEdit (Maybe Int)
-                                    |  PartsToDisplay String
+                |  PartsToDisplay String
    deriving (Eq, Ord, Show, Generic)
 
 instance SelfHash AppMailboxes where
 
+-- | Build a SelfMap similiarly to a regular Hashmap, however there is no Key
+-- field because that is what is generated.
 exampleAppMailbox :: SelfMap AppMailboxes
 exampleAppMailbox = fromList [LocationToEdit (Just 1), PartsToDisplay "apart"]
 
+
+-- | Notice, to access the fields we use '\'' to grab the Template Haskell Name
+-- This means {-# LANGUAGE TemplateHaskell #-} is required
 lookupLocationToEdit :: Maybe AppMailboxes
 lookupLocationToEdit = G.lookup 'LocationToEdit exampleAppMailbox
 
