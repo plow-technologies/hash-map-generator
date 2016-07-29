@@ -1,0 +1,9 @@
+flags: {}
+extra-package-dbs: []
+packages:
+- '.'
+extra-deps:
+- regex-genex-0.7.0
+- sbv-5.12
+- stream-monad-0.3
+resolver: lts-6.9
