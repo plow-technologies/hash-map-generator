@@ -28,6 +28,8 @@ Library
                       , QuickCheck
                       , unordered-containers
                       , hashable
+                      , text
+                      , template-haskell
 
 executable hash-map-generator
   Default-Language:     Haskell2010
@@ -46,6 +48,8 @@ executable hash-map-generator
                       , QuickCheck
                       , unordered-containers
                       , hashable
+                      , text
+                      , template-haskell
 
 Test-Suite spec
   Type:                 exitcode-stdio-1.0
@@ -63,6 +67,8 @@ Test-Suite spec
                       , QuickCheck
                       , unordered-containers
                       , hashable
+                      , text
+                      , template-haskell
                       
 
 Source-Repository head
