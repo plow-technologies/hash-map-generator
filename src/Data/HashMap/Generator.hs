@@ -13,7 +13,7 @@
 {-# LANGUAGE DefaultSignatures     #-}
 {-# LANGUAGE NoImplicitPrelude #-}
 
-module Data.HashMap.Generator where
+module Data.HashMap.Generator (lookup, fromList, insert, SelfMap, SelfKey, SelfHash (..)) where
 
 import Prelude hiding (lookup)
 import qualified Data.HashMap.Strict as H
