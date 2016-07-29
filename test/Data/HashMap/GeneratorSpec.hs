@@ -1,36 +1,47 @@
+{-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE TemplateHaskell #-}
+
 module Data.HashMap.GeneratorSpec (tests) where
 
 import Data.HashMap.Generator
+import qualified Data.HashMap.Generator as G
+
 
 import Test.Tasty
 import Test.Tasty.QuickCheck as QC
 import Test.Tasty.HUnit
 
-import Data.List
+import GHC.Generics
+
 import Data.Ord
 
 tests :: TestTree
-tests = testGroup "Tests" [properties, unitTests]
+tests = testGroup "Tests" [unitTests]
 
-properties :: TestTree
-properties = testGroup "Properties" [qcProps]
 
-qcProps = testGroup "(checked by QuickCheck)"
-  [ QC.testProperty "sort == sort . reverse" (
-      \list -> sort (list :: [Int]) == sort (reverse list))
-  , QC.testProperty "Fermat's little theorem" (
-      \x -> ((x :: Integer)^7 - x) `mod` 7 == 0)
-  -- the following property does not hold
-  , QC.testProperty "Fermat's last theorem" (
-      \x y z n ->
-        (n :: Integer) >= 3 QC.==> x^n + y^n /= (z^n :: Integer))
-  ]
 
 unitTests = testGroup "Unit tests"
-  [ testCase "List comparison (different length)" (
-      [1, 2, 3] `compare` [1,2] @?= GT)
+  [ testCase "Should retrive Location to Edit" (
+      lookupLocationToEdit `compare` (Just (LocationToEdit (Just 1))) @?= EQ)
 
   -- the following test does not hold
-  , testCase "List comparison (same length)" (
-      [1, 2, 3] `compare` [1,2,2] @?= LT)
+  , testCase "Should retrive Part to Display" (
+      lookupPartsToDisplay `compare` (Just (PartsToDisplay ("apart"))) @?= EQ)
   ]
+
+  -- Requirements 
+-- Completely reified
+data AppMailboxes = LocationToEdit (Maybe Int)
+                                    |  PartsToDisplay String
+   deriving (Eq, Ord, Show, Generic)
+
+instance SelfHash AppMailboxes where
+
+exampleAppMailbox :: SelfMap AppMailboxes
+exampleAppMailbox = fromList [LocationToEdit (Just 1), PartsToDisplay "apart"]
+
+lookupLocationToEdit :: Maybe AppMailboxes
+lookupLocationToEdit = G.lookup 'LocationToEdit exampleAppMailbox
+
+lookupPartsToDisplay :: Maybe AppMailboxes
+lookupPartsToDisplay = G.lookup 'PartsToDisplay exampleAppMailbox

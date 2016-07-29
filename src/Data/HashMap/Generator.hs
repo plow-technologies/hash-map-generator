@@ -24,19 +24,6 @@ import Language.Haskell.TH
 import Data.Proxy
 
 
--- Requirements 
--- Completely reified
-data AppMailboxes = LocationToEdit (Maybe Int)
-                                    |  PartsToDisplay String
-   deriving (Eq, Ord, Show, Generic)
-
-
--- keyLocationToEdit  = LocationToEdit Nothing
--- keyPartsToDisplay = PartsToDisplay ""
-
-
-
-instance SelfHash AppMailboxes where
 
 -- ========================================================================================
 -- { Exported Things: }
