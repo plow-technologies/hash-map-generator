@@ -1,21 +1,21 @@
 # hash-map-generator
 
-TODO: Write description here
+The hashmap generator creates hash maps that are self hashed from sum types.
+This can be useful for some dynamic programming applications.  
+Notably, the problem of passing around lots of mailboxes of varying type to different places in a codebase
 
 ## Installation
 
-TODO: Write installation instructions here
+``` cabal install hash-map-generator```
 
 ## Usage
 
-TODO: Write usage instructions here
+
 
 ## How to run tests
 
 ```
-cabal configure --enable-tests && cabal build && cabal test
+cabal install --enable-tests
+cabal test
 ```
 
-## Contributing
-
-TODO: Write contribution instructions here
