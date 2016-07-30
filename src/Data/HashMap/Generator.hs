@@ -29,6 +29,7 @@ typing among a set of options going into a function.
 module Data.HashMap.Generator ( lookup
                             , fromList
                             , insert
+                            , key
                             , SelfMap
                             , SelfKey
                             , SelfHash (..)) where
@@ -46,11 +47,11 @@ import           Prelude             hiding (lookup)
 
 -- | 'SelfMap' is a 'HashMap' whose Key is derived from the type itself
 -- It is expected to be a SumType with single valued data constructors.
-type SelfMap a = H.HashMap SelfKey a
+type SelfMap a = H.HashMap (SelfKey a) a
 
 -- | The key for a 'SelfMap' is not available to use except through
 -- 'lookup'
-newtype SelfKey = SelfKey {_unSelfKey :: T.Text}
+newtype SelfKey p = SelfKey {_unSelfKey :: T.Text}
   deriving (Eq, Ord, Show, Hashable)
 
 
@@ -75,9 +76,11 @@ lookup n = H.lookup selfKey'
     selfKey' = SelfKey . T.pack . nameBase $ n
 
 
-
-
-
+-- |Useful for retrieving the 'SelfKey' for use in alternate hashmap routines
+key :: (SelfHash a) => Name -> (SelfKey a)
+key n = selfKey'
+  where
+    selfKey' = SelfKey . T.pack . nameBase $ n
 -- | Extend a 'SelfMap' with a new piece of data
 insert :: (SelfHash a) =>  a -> SelfMap a -> SelfMap a
 insert v = H.insert (selfKey v) v 
@@ -101,8 +104,8 @@ class SelfHash a where
     selfHashWithSalt = genericSelfHashWithSalt
     
 
-    selfKey         :: a -> SelfKey
-    default selfKey :: (Generic a, GSelfHash (Rep a)) => a -> SelfKey
+    selfKey         :: a -> (SelfKey a)
+    default selfKey :: (Generic a, GSelfHash (Rep a)) => a -> (SelfKey a)
     selfKey = genericSelfKey
 
 
@@ -112,7 +115,7 @@ class SelfHash a where
 genericSelfHashWithSalt :: (Generic a, GSelfHash (Rep a)) => Int -> a -> Int
 genericSelfHashWithSalt i = gSelfHashWithSalt i .from
 
-genericSelfKey :: (Generic a, GSelfHash (Rep a)) => a -> SelfKey
+genericSelfKey :: (Generic a, GSelfHash (Rep a)) => a -> (SelfKey a)
 genericSelfKey = gSelfKey .from
 
 
@@ -131,7 +134,7 @@ genericSelfKey = gSelfKey .from
 -- constructors 
 class GSelfHash (f :: * -> *) where
     gSelfHashWithSalt :: Int -> f a      -> Int
-    gSelfKey          :: f a -> SelfKey
+    gSelfKey          :: f a -> (SelfKey a)
 
 
 
@@ -164,7 +167,7 @@ instance  (CN l, CN r) => GSelfHash (l :+: r) where
 buildHashFromProxy :: CN f => Int -> proxy f -> Int
 buildHashFromProxy i = hashWithSalt i .  buildSelfKeyFromProxy
 
-buildSelfKeyFromProxy  :: CN f => proxy f -> SelfKey
+buildSelfKeyFromProxy  :: CN f => proxy f -> (SelfKey a)
 buildSelfKeyFromProxy = SelfKey . T.pack . safeHead "" . constructorNames
 
 -- | Needed for safe head access
