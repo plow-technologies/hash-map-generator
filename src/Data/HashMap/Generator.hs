@@ -60,7 +60,7 @@ newtype SelfKey p = SelfKey {_unSelfKey :: T.Text}
 
 -- | Build a SelfMap from a list of values 
 -- >>> fromList [RightConstructor 1, LeftOne "apart"]
-fromList :: (SelfHash a, Eq a) => [a] -> SelfMap a
+fromList :: (SelfHash a) => [a] -> SelfMap a
 fromList = foldr mapMaker H.empty 
   where
     mapMaker v = H.insert (selfKey v) v
@@ -104,8 +104,8 @@ class SelfHash a where
     selfHashWithSalt = genericSelfHashWithSalt
     
 
-    selfKey         :: a -> (SelfKey a)
-    default selfKey :: (Generic a, GSelfHash (Rep a)) => a -> (SelfKey a)
+    selfKey         :: a -> SelfKey a
+    default selfKey :: (Generic a, GSelfHash (Rep a)) => a -> SelfKey a
     selfKey = genericSelfKey
 
 
@@ -115,7 +115,7 @@ class SelfHash a where
 genericSelfHashWithSalt :: (Generic a, GSelfHash (Rep a)) => Int -> a -> Int
 genericSelfHashWithSalt i = gSelfHashWithSalt i .from
 
-genericSelfKey :: (Generic a, GSelfHash (Rep a)) => a -> (SelfKey a)
+genericSelfKey :: (Generic a, GSelfHash (Rep a)) => a -> SelfKey a
 genericSelfKey = gSelfKey .from
 
 
@@ -134,7 +134,7 @@ genericSelfKey = gSelfKey .from
 -- constructors 
 class GSelfHash (f :: * -> *) where
     gSelfHashWithSalt :: Int -> f a      -> Int
-    gSelfKey          :: f a -> (SelfKey a)
+    gSelfKey          :: f a -> SelfKey a
 
 
 
@@ -167,7 +167,7 @@ instance  (CN l, CN r) => GSelfHash (l :+: r) where
 buildHashFromProxy :: CN f => Int -> proxy f -> Int
 buildHashFromProxy i = hashWithSalt i .  buildSelfKeyFromProxy
 
-buildSelfKeyFromProxy  :: CN f => proxy f -> (SelfKey a)
+buildSelfKeyFromProxy  :: CN f => proxy f -> SelfKey a
 buildSelfKeyFromProxy = SelfKey . T.pack . safeHead "" . constructorNames
 
 -- | Needed for safe head access
