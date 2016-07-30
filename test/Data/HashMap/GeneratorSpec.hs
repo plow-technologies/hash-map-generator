@@ -13,26 +13,15 @@ import           Test.Tasty.HUnit
 
 import           GHC.Generics
 
-
-tests :: TestTree
-tests = testGroup "Tests" [unitTests]
-
-
-
-unitTests :: TestTree
-unitTests = testGroup "Unit tests"
-  [ testCase "Should retrive Location to Edit" ( 
-       lookupLocationToEdit `compare`  Just (LocationToEdit (Just 1)) @?= EQ)
-       
-  , testCase "Should retrive Part to Display" (
-       lookupPartsToDisplay `compare` Just (PartsToDisplay "apart") @?= EQ)
-  ]
+import           Control.Lens
 
 
 -- | An example sum type
 data AppMailboxes = LocationToEdit (Maybe Int)
                 |  PartsToDisplay String
    deriving (Eq, Ord, Show, Generic)
+
+makePrisms ''AppMailboxes
 
 instance SelfHash AppMailboxes where
 
@@ -49,3 +38,29 @@ lookupLocationToEdit = G.lookup 'LocationToEdit exampleAppMailbox
 
 lookupPartsToDisplay :: Maybe AppMailboxes
 lookupPartsToDisplay = G.lookup 'PartsToDisplay exampleAppMailbox
+
+
+
+-- | Using lens should get you to the bottom
+useLensToLookupPartsToDisplay :: Maybe String
+useLensToLookupPartsToDisplay = exampleAppMailbox ^? ix (G.key 'PartsToDisplay ) . _PartsToDisplay
+
+
+
+
+-- Tests
+tests :: TestTree
+tests = testGroup "Tests" [unitTests]
+
+
+
+unitTests :: TestTree
+unitTests = testGroup "Unit tests"
+  [ testCase "Should retrive Location to Edit" (
+       lookupLocationToEdit `compare`  Just (LocationToEdit (Just 1)) @?= EQ)
+
+  , testCase "Should retrive Part to Display" (
+       lookupPartsToDisplay `compare` Just (PartsToDisplay "apart") @?= EQ)
+  , testCase "Should retrive Part to Display Using lens" (
+       useLensToLookupPartsToDisplay `compare` Just "apart" @?= EQ)       
+  ]

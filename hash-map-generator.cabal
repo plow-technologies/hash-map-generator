@@ -35,6 +35,7 @@ Test-Suite spec
   Ghc-Options:          -Wall
   Main-Is:              Spec.hs
   Build-Depends:        base
+                      , lens
                       , regex-genex
                       , tasty                      
                       , tasty-golden
